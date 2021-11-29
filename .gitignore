@@ -107,3 +107,4 @@ dist
 **/supabase/.branches
 **/supabase/.temp
 **/supabase/.env
+supabase-docker-compose/dockerfiles/postgres/pg-data
