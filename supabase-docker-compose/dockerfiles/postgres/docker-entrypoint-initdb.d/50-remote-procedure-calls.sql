@@ -22,3 +22,17 @@ BEGIN
    SELECT * FROM public.user_profiles ORDER BY lower(name);
 END;
 $$;
+
+-- get records count for individual user
+CREATE OR REPLACE FUNCTION public.get_user_records_count(selected_user_id uuid)
+  RETURNS integer
+  LANGUAGE plpgsql AS
+$$
+BEGIN
+    RETURN QUERY
+    SELECT COUNT(*) FROM public.records
+    WHERE sensor_id IN (
+      SELECT id FROM public.sensors WHERE user_id = selected_user_id
+    );
+END;
+$$;
