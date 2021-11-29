@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
+**/supabase/.env
+supabase-docker-compose/dockerfiles/postgres/pg-data

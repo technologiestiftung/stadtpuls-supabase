@@ -1,0 +1,23 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#19fc8e",
+    "activityBar.activeBorder": "#b262fd",
+    "activityBar.background": "#19fc8e",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#b262fd",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#19fc8e",
+    "statusBar.background": "#03df74",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#02ad5a",
+    "statusBarItem.remoteBackground": "#03df74",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#03df74",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#03df7499",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#03df74",
+  "workbench.colorTheme": "Night Owl"
+}
