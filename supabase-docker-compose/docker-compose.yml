@@ -1,5 +1,5 @@
 # TODO: [STADTPULS-396] Fix container versions. Don't use the latest version.
-version: "3.6"
+version: "3.9"
 services:
   kong:
     container_name: supabase-kong
@@ -17,7 +17,8 @@ services:
     ports:
       - ${AUTH_PORT}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
     environment:
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
@@ -51,7 +52,8 @@ services:
     ports:
       - ${REST_PORT}:3000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
     environment:
       PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/postgres
@@ -65,7 +67,8 @@ services:
     ports:
       - ${REALTIME_PORT}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: on-failure
     environment:
       DB_HOST: db
@@ -84,8 +87,10 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - db
-      - rest
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
     restart: always
     environment:
       ANON_KEY: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYyNzIwODU0MCwiZXhwIjoxOTc0MzYzNzQwLCJhdWQiOiIiLCJzdWIiOiIiLCJyb2xlIjoiYW5vbiJ9.sUHErUOiKZ3nHQIxy-7jND6B80Uzf9G4NtMLmL6HXPQ
@@ -116,6 +121,12 @@ services:
       # might be useful for debugging
       - -c
       - log_statement=all
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
