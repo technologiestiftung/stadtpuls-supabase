@@ -22,4 +22,12 @@ VALUES (
   (
     'Lautstärke',
     'Ein Lautstärkesensor erfasst die Umgebungsgeräusche (Lautstärke) in Form des Schalldrucks und gibt die Messwerte in Dezibel aus. Als Referenz: ein Staubsauger erreicht einen Schalldruck von ca. 70 dB.'
+  ),
+  (
+    'Helligkeit',
+    'Als Helligkeitssensor werden elektronische Bauelemente bezeichnet, die Licht unter Benutzung des photoelektrischen Effekts in ein elektrisches Signal umwandeln.'
+  ),
+  (
+    'Sonstige',
+    'Diese Sensoren sind nicht in den anderen Kategorien zu finden. Wir sind über Vorschläge für weitere Kategorien dankbar.'
   );

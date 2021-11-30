@@ -54,7 +54,9 @@ CREATE TYPE "public"."category_names" AS ENUM (
     'Luftfeuchtigkeit',
     'Luftdruck',
     'Unit Counter',
-    'Lautstärke'
+    'Lautstärke',
+    'Helligkeit',
+    'Sonstige'
 );
 CREATE TABLE "public"."categories" (
     "id" int4 GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
