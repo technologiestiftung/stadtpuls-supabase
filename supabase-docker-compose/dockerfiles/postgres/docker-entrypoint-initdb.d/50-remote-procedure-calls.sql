@@ -46,3 +46,72 @@ BEGIN
     ));
 END;
 $$;
+
+
+-- drop function public.get_extended_accounts();
+-- usage
+-- select
+--   *
+-- from
+--   "public".get_extended_accounts ();
+create or replace function public.get_extended_accounts ()
+-- our function returns a full table
+-- so we define the structure here
+  returns table (
+    id uuid, username text, display_name text, created_at timestamptz, link text, description text, sensors_count bigint, records_count bigint, categories integer [])
+  language plpgsql
+  as $$
+  -- since we have some output table variables (its columsn) names overlap with the columns of our select statements
+  -- we tell postgres to always use the columns
+  #variable_conflict use_column
+begin
+  return QUERY (
+    /*
+     here we cast some of the values to not be forced to use the exact type like varchar(50)
+     instead we cast to text
+     */
+    select
+      id,
+      name::text,
+      display_name::text,
+      created_at,
+      url::text,
+      description::text,
+      /* the next statement creates the sensors_count for each user */
+      (
+        select
+          count(*)
+        from
+          public.sensors as ps
+        where
+          pup.id = ps.user_id) as sensors_count,
+        /* next we create the records_count */
+        (
+          select
+            count(*)
+          from
+            "public".records as pr
+            join public.sensors as ps on pr.sensor_id = ps.id
+          group by
+            ps.user_id
+          having
+            ps.user_id = pup.id) as records_count,
+            /*next we create the categories array for the user */
+          (
+            select
+              array ( select distinct
+                  ps.category_id
+                from
+                  "public".sensors as ps
+                where
+                  pup.id = ps.user_id))
+            from
+              public.user_profiles as pup
+              /* we order the result by the users name case insensitive*/
+            order by
+              lower(pup.name));
+end;
+$$;
+
+
+
