@@ -35,11 +35,11 @@ $$;
 -- select * from public.get_user_records_count ('46d0c09b-3af6-4452-9392-230672c85929');
 
 CREATE OR REPLACE FUNCTION public.get_user_records_count(selected_user_id uuid)
-  RETURNS table(count bigint)
+  RETURNS  bigint
   LANGUAGE plpgsql AS
 $$
 BEGIN
-    RETURN QUERY(
+    RETURN (
     SELECT COUNT(*) FROM public.records
     WHERE sensor_id IN (
       SELECT id FROM public.sensors WHERE user_id = selected_user_id
