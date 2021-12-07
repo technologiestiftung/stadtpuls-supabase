@@ -110,3 +110,4 @@ dist
 **/supabase/.env
 supabase-docker-compose/dockerfiles/postgres/pg-data
 supabase-mirror/NOTES.md
+.vscode/settings.json
