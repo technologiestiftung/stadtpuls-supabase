@@ -112,6 +112,16 @@ create policy "Allow individual delete access" on public.sensors for delete usin
 -- start records
 create policy "Allow read access on public records table" on public.records for
 select using (auth.role() = 'anon');
+-- TODO: [STADTPULS-589] Make row level security work on insert update and delete records
+-- Parameters need to be prefixed because the name clashes with `pm`'s columns
+-- CREATE or replace FUNCTION owns_record(_user_id uuid, _sensors_id int4, _record_id int4) RETURNS bool AS $$
+-- SELECT EXISTS (
+--   SELECT 1
+--   FROM "public".sensors ps join "public".records pr on _user_id = ps.user_id and _sensors_id = ps.id and _record_id = pr.id
+-- );
+-- $$ LANGUAGE sql SECURITY DEFINER;
+-- drop policy "Allow individual insert access" on public.records;
+-- create policy "Allow individual insert access" on public.records for insert with check (owns_record (auth.uid (), sensor_id, id));
 create policy "Allow read access for authenticated on public records table" on public.records for
 select using (auth.role() = 'authenticated');
 -- end records/
