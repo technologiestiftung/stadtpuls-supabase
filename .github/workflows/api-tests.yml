@@ -7,9 +7,6 @@ env:
   SUPABASE_SERVICE_ROLE_KEY: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYyNzIwNzUzMiwiZXhwIjoxNjkwMjc5NTMyLCJhdWQiOiIiLCJzdWIiOiIiLCJyb2xlIjoic2VydmljZV9yb2xlIn0.hfdXFZV5PdvUdo2xK0vStb1i97GJukSkRqfwd4YIh2M"
   JWT_SECRET: "your-super-secret-jwt-token-with-at-least-32-characters-long"
   SUPABASE_URL: http://localhost:8000
-  PORT: 4000
-  ISSUER: "stadtpuls.com"
-  LOG_LEVEL: "info"
   DATABASE_URL: "postgres://postgres:your-super-secret-and-long-postgres-password@localhost:5432/postgres"
   POSTGRES_PASSWORD: "your-super-secret-and-long-postgres-password"
   # fill with random passwords
@@ -36,8 +33,7 @@ env:
   KONG_PORT: 8000
   KONG_PORT_TLS: 8443
   SUPABASE_MAX_ROWS: 3000
-  REDIS_URL: http://redis:6379
-  STAGE: test
+
 on:
   push:
     branches: [main, staging]
@@ -54,6 +50,9 @@ jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
     defaults:
       run:
         shell: bash
@@ -61,8 +60,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run supabase
         run: docker-compose --env-file supabase-docker-compose/.env.example --file supabase-docker-compose/docker-compose.yml up --detach --build --force-recreate
-      - name: Touch API
-        run: ./scripts/github-actions-touch-api.sh
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test:ci
       - name: Setup tmate session
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3

@@ -71,6 +71,7 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env_*
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -109,3 +110,4 @@ dist
 **/supabase/.env
 supabase-docker-compose/dockerfiles/postgres/pg-data
 supabase-mirror/NOTES.md
+.vscode/settings.json

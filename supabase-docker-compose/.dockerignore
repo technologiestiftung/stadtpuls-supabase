@@ -1,0 +1,8 @@
+.env
+compose.sh
+docker-compose.yml
+__tests__/*
+README.md
+node_modules
+.git
+.gitignore
