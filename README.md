@@ -1,4 +1,4 @@
-# stadtpuls.com Supabse
+# Stadtpuls.com Supabse
 
 Configuration for running supabase locally and remote
 
