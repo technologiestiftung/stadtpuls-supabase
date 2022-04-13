@@ -1,6 +1,6 @@
 {
   "name": "@technologiestiftung/stadtpuls-supabase",
-  "version": "4.0.0",
+  "version": "4.1.0-rc.1",
   "private": true,
   "description": "",
   "scripts": {
