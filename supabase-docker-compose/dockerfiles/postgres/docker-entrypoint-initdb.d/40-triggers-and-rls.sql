@@ -142,9 +142,9 @@ create policy "Allow individual insert access" on public.records for
 insert with check (public.owns_sensor (auth.uid (), "sensor_id"));
 -- update
 create policy "Allow individual update access" on public.records for
-update using (public.owns_record (auth.uid (), "sensor_id")) with CHECK (public.owns_record (auth.uid (), "sensor_id"));
+update using (public.owns_record (auth.uid (), "id")) with CHECK (public.owns_record (auth.uid (), "id"));
 -- delete
-create policy "Allow individual delete access" on public.records for delete using (public.owns_record(auth.uid(), "sensor_id"));
+create policy "Allow individual delete access" on public.records for delete using (public.owns_record(auth.uid(), "id"));
 -- select
 create policy "Allow read access on public records table" on public.records for
 select using (auth.role() = 'anon');
