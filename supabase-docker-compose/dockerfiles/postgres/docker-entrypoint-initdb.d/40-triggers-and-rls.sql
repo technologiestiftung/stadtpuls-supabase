@@ -110,21 +110,50 @@ create policy "Allow individual delete access" on public.sensors for delete usin
 -- end sensors
 --
 -- start records
-create policy "Allow read access on public records table" on public.records for
-select using (auth.role() = 'anon');
 -- TODO: [STADTPULS-589] Make row level security work on insert update and delete records
 -- Parameters need to be prefixed because the name clashes with `pm`'s columns
--- CREATE or replace FUNCTION owns_record(_user_id uuid, _sensors_id int4, _record_id int4) RETURNS bool AS $$
--- SELECT EXISTS (
---   SELECT 1
---   FROM "public".sensors ps join "public".records pr on _user_id = ps.user_id and _sensors_id = ps.id and _record_id = pr.id
--- );
+CREATE OR REPLACE FUNCTION public.owns_sensor (_user_id uuid, _sensor_id int4) RETURNS bool AS $$
+SELECT EXISTS (
+    SELECT 1
+    FROM sensors
+    WHERE sensors.id = _sensor_id
+      AND sensors.user_id = _user_id
+  );
+$$ LANGUAGE sql SECURITY DEFINER;
+--
+CREATE OR REPLACE FUNCTION public.owns_record (_user_id uuid, _record_id int4) RETURNS bool AS $$
+SELECT EXISTS (
+    SELECT 1
+    FROM sensors
+    WHERE (
+        SELECT user_id
+        FROM sensors
+        WHERE id = (
+            SELECT sensor_id
+            FROM records
+            WHERE records.id = _record_id
+          )
+      ) = _user_id
+  ) $$ LANGUAGE sql SECURITY DEFINER;
 -- $$ LANGUAGE sql SECURITY DEFINER;
 -- drop policy "Allow individual insert access" on public.records;
--- create policy "Allow individual insert access" on public.records for insert with check (owns_record (auth.uid (), sensor_id, id));
+-- insert
+create policy "Allow individual insert access" on public.records for
+insert with check (public.owns_sensor (auth.uid (), "sensor_id"));
+-- update
+create policy "Allow individual update access" on public.records for
+update using (public.owns_record (auth.uid (), "id")) with CHECK (public.owns_record (auth.uid (), "id"));
+-- delete
+create policy "Allow individual delete access" on public.records for delete using (public.owns_record(auth.uid(), "id"));
+-- select
+create policy "Allow read access on public records table" on public.records for
+select using (auth.role() = 'anon');
 create policy "Allow read access for authenticated on public records table" on public.records for
 select using (auth.role() = 'authenticated');
 -- end records/
+--
+--
+--
 --start auth_tokens/
 -- create policy "Allow individual insert access" on public.authtokens for
 -- insert with check (auth.uid() = "user_id");
