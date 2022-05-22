@@ -57,7 +57,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run supabase
         run: docker-compose --env-file supabase-docker-compose/.env.example --file supabase-docker-compose/docker-compose.yml up --detach --build --force-recreate
       - name: Use Node.js ${{ matrix.node-version }}
